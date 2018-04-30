@@ -93,25 +93,20 @@ void *osRtxMemoryPoolAlloc (os_mp_info_t *mp_info) {
 #if (EXCLUSIVE_ACCESS == 0)
   __disable_irq();
 
-  if (mp_info->used_blocks < mp_info->max_blocks) {
-    mp_info->used_blocks++;
     block = mp_info->block_free;
     if (block != NULL) {
       //lint --e{9079} --e{9087} "conversion from pointer to void to pointer to other type"
       mp_info->block_free = *((void **)block);
+      mp_info->used_blocks++;
     }
-  } else {
-    block = NULL;
-  }
 
   if (primask == 0U) {
     __enable_irq();
   }
 #else
-  if (atomic_inc32_lt(&mp_info->used_blocks, mp_info->max_blocks) < mp_info->max_blocks) {
-    block = atomic_link_get(&mp_info->block_free);
-  } else {
-    block = NULL;
+  block = atomic_link_get(&mp_info->block_free);
+  if (block != NULL) {
+    (void)atomic_inc32(&mp_info->used_blocks);
   }
 #endif
 
@@ -175,11 +170,6 @@ osStatus_t osRtxMemoryPoolFree (os_mp_info_t *mp_info, void *block) {
 static void osRtxMemoryPoolPostProcess (os_memory_pool_t *mp) {
   void        *block;
   os_thread_t *thread;
-
-  if (mp->state == osRtxObjectInactive) {
-    //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-    return;
-  }
 
   // Check if Thread is waiting to allocate memory
   if (mp->thread_list != NULL) {
@@ -561,9 +551,6 @@ static osStatus_t svcRtxMemoryPoolDelete (osMemoryPoolId_t mp_id) {
     return osErrorResource;
   }
 
-  // Mark object as inactive
-  mp->state = osRtxObjectInactive;
-
   // Unblock waiting threads
   if (mp->thread_list != NULL) {
     do {
@@ -572,6 +559,10 @@ static osStatus_t svcRtxMemoryPoolDelete (osMemoryPoolId_t mp_id) {
     } while (mp->thread_list != NULL);
     osRtxThreadDispatch(NULL);
   }
+
+  // Mark object as inactive and invalid
+  mp->state = osRtxObjectInactive;
+  mp->id    = osRtxIdInvalid;
 
   // Free data memory
   if ((mp->flags & osRtxFlagSystemMemory) != 0U) {

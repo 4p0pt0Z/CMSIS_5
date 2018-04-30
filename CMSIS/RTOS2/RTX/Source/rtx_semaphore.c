@@ -110,11 +110,6 @@ static uint32_t SemaphoreTokenIncrement (os_semaphore_t *semaphore) {
 static void osRtxSemaphorePostProcess (os_semaphore_t *semaphore) {
   os_thread_t *thread;
 
-  if (semaphore->state == osRtxObjectInactive) {
-    //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-    return;
-  }
-
   // Check if Thread is waiting for a token
   if (semaphore->thread_list != NULL) {
     // Try to acquire token
@@ -368,9 +363,6 @@ static osStatus_t svcRtxSemaphoreDelete (osSemaphoreId_t semaphore_id) {
     return osErrorResource;
   }
 
-  // Mark object as inactive
-  semaphore->state = osRtxObjectInactive;
-
   // Unblock waiting threads
   if (semaphore->thread_list != NULL) {
     do {
@@ -379,6 +371,10 @@ static osStatus_t svcRtxSemaphoreDelete (osSemaphoreId_t semaphore_id) {
     } while (semaphore->thread_list != NULL);
     osRtxThreadDispatch(NULL);
   }
+
+  // Mark object as inactive and invalid
+  semaphore->state = osRtxObjectInactive;
+  semaphore->id    = osRtxIdInvalid;
 
   // Free object memory
   if ((semaphore->flags & osRtxFlagSystemObject) != 0U) {

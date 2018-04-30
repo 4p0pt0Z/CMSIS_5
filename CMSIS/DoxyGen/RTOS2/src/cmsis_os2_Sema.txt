@@ -112,11 +112,7 @@ Returned by:
 /**
 \struct osSemaphoreAttr_t
 \details
-Attributes to configure a semaphore.
-
-Refer to \ref CMSIS_RTOS_MemoryMgmt for details about usage of
- - osSemaphoreAttr_t::cb_mem
- - osSemaphoreAttr_t::cb_size
+Specifies the following attributes for the \ref osSemaphoreNew function.
 */
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
@@ -133,6 +129,22 @@ semaphore.
 The parameter \em initial_count sets the initial number of available tokens.
 
 The parameter \em attr specifies additional semaphore attributes. Default attributes will be used if set to \token{NULL}.
+/*
+New definition:
+*/
+Possible \ref osSemaphoreId_t return values:
+- pointer to the created semaphore object
+- \em NULL, if (\em max_count == 0U)
+- \em NULL, if  (\em max_count > \em MAX_SEMAPHORE_CNT)
+- \em NULL, if  (\em initial_count > \em max_count)
+- \em NULL, if the control block memory (\em attr->cb_mem) is not \em NULL and the memory is not 4 byte aligned 
+- \em NULL, if the control block memory (\em attr->cb_mem) is not \em NULL but the size (\em attr->cb_size) is not big enough to store a \em semaphore object
+- \em NULL, if the control block memory (\em attr->cb_mem) is \em NULL but the size (\em attr->cb_size) is not 0
+- \em NULL, if the maximum number of semaphores have been created already
+- \em NULL, if IRQ is masked
+- \em NULL, if in IRQ mode.
+
+
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -194,6 +206,17 @@ void Thread_Semaphore (void *argument)
 \details
 The function \b osSemaphoreGetName returns the pointer to the name string of the semaphore identified by parameter \a
 semaphore_id or \token{NULL} in case of an error.
+/*
+New definition:
+*/
+Possible return values:
+- pointer to the name string of the semaphore identified by parameter \a semaphore_id
+- \em NULL, if the semaphore specified by \a semaphore_id  is \em NULL
+- \em NULL, if a semaphore specified by \a semaphore_id does not exist
+- \em NULL, if the semaphore is in state \em 'osRtxObjectInactive'
+- \em NULL, if IRQ is masked
+- \em NULL, if in IRQ mode.
+
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
@@ -214,10 +237,14 @@ that is calling this function is put into the \ref ThreadStates "BLOCKED" state.
  - all other values specify a time in kernel ticks for a timeout (i.e. timed-wait semantics).
 
 Possible \ref osStatus_t return values:
- - \em osOK: the token has been obtained.
- - \em osErrorTimeout: the token could not be obtained in the given time.
- - \em osErrorResource: the token could not be obtained when no \a timeout was specified.
- - \em osErrorParameter: the parameter \a semaphore_id is incorrect.
+- \em 'osOK', if the token has been obtained
+- \em 'osErrorResource', if the semaphore specified by \a semaphore_id is in state \em 'osRtxObjectInactive'
+- \em 'osErrorTimeout', if the token is not available and \em timeout > 0
+- \em 'osErrorResource', if the token is not available and \em timeout == 0 
+- \em 'osErrorParameter',  if a semaphore specified by \a semaphore_id does not exist 
+- \em 'osErrorParameter', if semaphore_id equals \em NULL.
+
+
 
 \note May be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines" if the parameter \a timeout is set to
 \token{0}.
@@ -236,9 +263,11 @@ can only be released up to the maximum count specified at creation time, see \re
 currently wait for a token of this semaphore object will be put into the \ref ThreadStates "READY" state.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the token has been correctly released and the count increased.
- - \em osErrorResource: the maximum token count has been reached.
- - \em osErrorParameter: the parameter \a semaphore_id is incorrect.
+- \em 'osOK', if the token has been correctly released and the count increased
+- \em 'osErrorParameter', if a semaphore specified by \a semaphore_id does not exist
+- \em 'osErrorParameter', if the semaphore specified by \a semaphore_id is \em NULL
+- \em 'osErrorResource', if the semaphore specified by \a semaphore_id is in state \em 'osRtxObjectInactive'.
+- \em 'osErrorResource', if no semaphore specified by \a semaphore_id has been taken.
 
 \note This function may be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -254,6 +283,12 @@ Refer to \ref osSemaphoreNew.
 The function \b osSemaphoreGetCount returns the number of available tokens of the semaphore object specified by parameter
 \a semaphore_id. In case of an error it returns \token{0}.
 
+Possible \ref osStatus_t return values:
+- \em the number of available tokens, in case of success
+- \em 0, if a semaphore specified by \a semaphore_id does not exist
+- \em 0, if the semaphore is \em NULL
+- \em 0, the semaphore is in state \em 'osRtxObjectInactive'.
+
 \note This function may be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
 
@@ -266,10 +301,12 @@ memory obtained for semaphore handling. After this call, the \a semaphore_id is 
 semaphore may be created again using the function \ref osSemaphoreNew.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the semaphore object has been deleted.
- - \em osErrorParameter: the parameter \a semaphore_id is \token{NULL} or invalid.
- - \em osErrorResource: the semaphore specified by parameter \em semaphore_id is in an invalid semaphore state.
- - \em osErrorISR: \b osSemaphoreDelete cannot be called from interrupt service routines.
+ - \em 'osOK', if the semaphore specified by \a semaphore_id has been deleted
+ - \em 'osErrorResource', if the state of semaphore specified by \a semaphore_id is \em 'osRtxObjectInactive'
+ - \em 'osErrorParameter', if a semaphore specified by \a semaphore_id does not exist
+ - \em 'osErrorParameter', if the semaphore is \em NULL
+ - \em 'osErrorISR', if IRQ is masked
+ - \em 'osErrorISR', if in IRQ mode.
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
@@ -279,21 +316,23 @@ Possible \ref osStatus_t return values:
 /**
 \var osSemaphoreAttr_t::attr_bits
 \details
-Reserved for future use (set to '0').\n
-Default: \token{0}.
+Reserved for future use (must be set to '0' for future compatibility).
 
 \var osSemaphoreAttr_t::cb_mem
 \details
-Pointer to a memory location for the semaphore control block object. This can optionally be used for custom memory management systems.\n
-Default: \token{NULL} (uses kernel memory management).
+Pointer to a memory for the semaphore control block object. Refer to \ref StaticObjectMemory for more information.
 
+Default: \token{NULL} to use \ref CMSIS_RTOS_MemoryMgmt_Automatic for the semaphore control block.
 
 \var osSemaphoreAttr_t::cb_size
 \details
-The size of the memory block passed with \ref cb_mem. Must be the size of a semaphore control block object or larger.
+The size (in bytes) of memory block passed with \ref cb_mem. For RTX, the minimum value is defined with \ref osRtxSemaphoreCbSize (higher values are permitted).
+
+Default: \token{0} as the default is no memory provided with \ref cb_mem.
 
 \var osSemaphoreAttr_t::name
 \details
-Pointer to a string with a human readable name of the semaphore object.\n
-Default: \token{NULL}.
+Pointer to a constant string with a human readable name (displayed during debugging) of the semaphore object.
+
+Default: \token{NULL} no name specified.
 */

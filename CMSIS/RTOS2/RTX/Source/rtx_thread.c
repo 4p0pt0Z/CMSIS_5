@@ -151,7 +151,7 @@ void osRtxThreadListPut (os_object_t *object, os_thread_t *thread) {
   priority = thread->priority;
 
   prev = osRtxThreadObject(object);
-  next = object->thread_list;
+  next = prev->thread_next;
   while ((next != NULL) && (next->priority >= priority)) {
     prev = next;
     next = next->thread_next;
@@ -548,13 +548,6 @@ __WEAK void osRtxThreadStackCheck (void) {
 /// \param[in]  thread          thread object.
 static void osRtxThreadPostProcess (os_thread_t *thread) {
   uint32_t thread_flags;
-
-  // Check thread state
-  if ((thread->state == osRtxThreadInactive) ||
-      (thread->state == osRtxThreadTerminated)) {
-    //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-    return;
-  }
 
   // Check if Thread is waiting for Thread Flags
   if (thread->state == osRtxThreadWaitingThreadFlags) {
@@ -1107,8 +1100,9 @@ static osStatus_t svcRtxThreadResume (osThreadId_t thread_id) {
 /// \param[in]  thread          thread object.
 static void osRtxThreadFree (os_thread_t *thread) {
 
-  // Mark object as inactive
+  // Mark object as inactive and invalid
   thread->state = osRtxThreadInactive;
+  thread->id    = osRtxIdInvalid;
 
 #if (DOMAIN_NS == 1)
   // Free secure process stack

@@ -77,10 +77,17 @@ The \ref templates_pg supplied by Arm have been tested and verified with the fol
 
 \page core_revisionHistory Revision History of CMSIS-Core (Cortex-M)
 
-<table class="cmtable" summary="Core Exception Name">
+<table class="cmtable" summary="Revision History">
     <tr>
       <th>Version</th>
       <th>Description</th>
+    </tr>
+    <tr>
+      <td>V5.1.2</td>
+      <td>
+        Removed using get/set built-ins FPSCR in GCC >= 7.2 due to shortcomings.\n
+        Added __NO_RETURN to __NVIC_SystemReset() to silence compiler warnings.\n
+      </td>
     </tr>
     <tr>
       <td>V5.1.1</td>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS:RTOS2:Keil RTX5" brief="RTX5" version="5.3.0"/>    <!-- name and version of the component  -->
+  <component name="CMSIS:RTOS2:Keil RTX5" shortname="RTX5" version="5.3.1"/>    <!-- name and version of the component -->
 
   <typedefs>
     <!-- Attributes structure for thread -->
@@ -172,7 +172,8 @@
       <member name="tz_memory"     type="uint32_t"       offset="64" info="TrustZone Memory Identifier"/>
 
       <var name="obj_name"   type="uint8_t"  info="Object name string" size="66" />
-      <var name="cb_valid"   type="uint32_t" info="Control Block validation status (valid=1, invalid=0)"/>
+      <var name="cb_valid"   type="uint32_t" info="Control block validation status (valid=1, invalid=0)"/>
+      <var name="sp_valid"   type="uint32_t" info="Stack pointer validation status (valid=1, invalid=0)"/>
       <var name="out_type"   type="uint8_t"  info="Output display type ID"/>
 
       <var name="ex_delay"   type="uint32_t" info="Calculated execution delay"/>
@@ -594,12 +595,12 @@
 
   <objects>
     <object name="RTX RTOS Object">
-      <var name="i"      type="uint32_t" value="0" />
-      <var name="j"      type="uint32_t" value="0" />
-      <var name="k"      type="uint32_t" value="0" />
-      <var name="n"      type="uint32_t" value="0" />
-      <var name="sp"     type="uint32_t" value="0" />
-      <var name="addr"   type="uint32_t" value="0" />
+      <var name="i"    type="uint32_t" value="0" />
+      <var name="j"    type="uint32_t" value="0" />
+      <var name="k"    type="uint32_t" value="0" />
+      <var name="n"    type="uint32_t" value="0" />
+      <var name="sp"   type="uint32_t" value="0" />
+      <var name="addr" type="uint32_t" value="0" />
       <var name="ipsr"   type="uint32_t" value="0" />
       <var name="psp"    type="uint32_t" value="0" />
       <var name="v8m_ns" type="uint32_t" value="0" />
@@ -799,6 +800,7 @@
       <list name="i" start="0" limit="TCB._count">
         <calc>
           TCB[i].cb_valid = (TCB[i].id == 1) &amp;&amp; (TCB[i].state != 0) &amp;&amp; (TCB[i].sp != 0);
+          TCB[i].sp_valid = 1;
         </calc>
 
         <!-- Stack pointer for running thread -->
@@ -808,9 +810,12 @@
           psp  = (psp == 0) ? (TCB[i].sp) : (psp);
 
           sp = ((ipsr != 0) &amp;&amp; (ipsr &lt; 16)) ? (TCB[i].sp) : (psp);
+
+          TCB[i].sp_valid = ((ipsr != 0) &amp;&amp; (ipsr &lt; 16)) ? (0) : (1);
         </calc>
 
         <calc cond="(TCB[i].state == 2) &amp;&amp; (__Running == 1)">
+          TCB[i].sp_valid = 0;
           sp = TCB[i].sp;
         </calc>
 
@@ -1153,6 +1158,8 @@
         <calc cond="TCB[i].cb_valid &amp;&amp; (TCB[i].name == 0) &amp;&amp; (stack_wmark != 0)"> TCB[i].out_type = 2; </calc>
         <calc cond="TCB[i].cb_valid &amp;&amp; (TCB[i].name != 0) &amp;&amp; (stack_wmark == 0)"> TCB[i].out_type = 3; </calc>
         <calc cond="TCB[i].cb_valid &amp;&amp; (TCB[i].name != 0) &amp;&amp; (stack_wmark != 0)"> TCB[i].out_type = 4; </calc>
+
+        <calc cond="TCB[i].sp_valid == 0"> TCB[i].out_type += 4; </calc>
       </list>
       <list cond="CCB._count" name="i" start="0" limit="CCB._count">
         <calc>CCB_En += CCB[i].cb_valid; </calc>
@@ -1244,6 +1251,11 @@
               <print cond="TCB[i].out_type == 3" property="id: %x[TCB[i]._addr]%t[TCB[i].obj_name]"      value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: %d[TCB[i].stack_curp]%%"                               alert="TCB[i].stack_over != 0"/>
               <print cond="TCB[i].out_type == 4" property="id: %x[TCB[i]._addr]%t[TCB[i].obj_name]"      value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: %d[TCB[i].stack_curp]%%, Max: %d[TCB[i].stack_maxp]%%" alert="TCB[i].stack_over != 0"/>
 
+              <print cond="TCB[i].out_type == 5" property="id: %x[TCB[i]._addr], %S[TCB[i].thread_addr]" value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: unknown"                               alert="TCB[i].stack_over != 0"/>
+              <print cond="TCB[i].out_type == 6" property="id: %x[TCB[i]._addr], %S[TCB[i].thread_addr]" value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: unknown, Max: %d[TCB[i].stack_maxp]%%" alert="TCB[i].stack_over != 0"/>
+              <print cond="TCB[i].out_type == 7" property="id: %x[TCB[i]._addr]%t[TCB[i].obj_name]"      value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: unknown"                               alert="TCB[i].stack_over != 0"/>
+              <print cond="TCB[i].out_type == 8" property="id: %x[TCB[i]._addr]%t[TCB[i].obj_name]"      value="%E[TCB[i].state &amp; 0x07], %E[TCB[i].priority], Stack Used: unknown, Max: %d[TCB[i].stack_maxp]%%" alert="TCB[i].stack_over != 0"/>
+
               <item property="State"        value="%E[TCB[i].state &amp; 0x07]"/>
               <item property="Priority"     value="%E[TCB[i].priority]"/>
               <item property="Attributes"   value="%E[TCB[i].attr &amp; 0x01]"/>
@@ -1281,10 +1293,15 @@
               </item>
 
               <item>
-                <print cond="stack_wmark == 0" property="Stack" value="Used: %d[TCB[i].stack_curp]%% [%d[TCB[i].stack_curb]]"/>
-                <print cond="stack_wmark != 0" property="Stack" value="Used: %d[TCB[i].stack_curp]%% [%d[TCB[i].stack_curb]], Max: %d[TCB[i].stack_maxp]%% [%d[TCB[i].stack_maxb]]"/>
+                <print cond="(TCB[i].sp_valid == 0) &amp;&amp; (stack_wmark == 0)" property="Stack" value="Used: unknown"/>
+                <print cond="(TCB[i].sp_valid == 0) &amp;&amp; (stack_wmark != 0)" property="Stack" value="Used: unknown, Max: %d[TCB[i].stack_maxp]%% [%d[TCB[i].stack_maxb]]"/>
+                <print cond="(TCB[i].sp_valid == 1) &amp;&amp; (stack_wmark == 0)" property="Stack" value="Used: %d[TCB[i].stack_curp]%% [%d[TCB[i].stack_curb]]"/>
+                <print cond="(TCB[i].sp_valid == 1) &amp;&amp; (stack_wmark != 0)" property="Stack" value="Used: %d[TCB[i].stack_curp]%% [%d[TCB[i].stack_curb]], Max: %d[TCB[i].stack_maxp]%% [%d[TCB[i].stack_maxb]]"/>
 
-                <item property="Used"  value="%d[TCB[i].stack_curb]"/>
+                <item>
+                  <print cond="TCB[i].sp_valid == 0" property="Used" value="unknown"/>
+                  <print cond="TCB[i].sp_valid == 1" property="Used" value="%d[TCB[i].stack_curb]"/>
+                </item>
                 <item property="Max"   value="%d[TCB[i].stack_maxb]" cond="stack_wmark != 0"/>
                 <item property="Top"   value="%x[TCB[i].stack_mem + TCB[i].stack_size]"/>
                 <item property="Current" value="%x[TCB[i].stack_cur]"/>
@@ -1498,7 +1515,7 @@
     <event id="0xF200 + 0x00" level="Error"  property="ThreadError"                 value="thread_id=%x[val1], status=%E[val2, rtx_t:status]" info="Thread error occurred."/>
     <event id="0xF200 + 0x01" level="API"    property="ThreadNew"                   value="func=%S[val1], argument=%x[val2], attr=%x[val3]" info="osThreadNew function was called."/>
     <event id="0xF200 + 0x02" level="Detail" property="ThreadNew"                   value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size], stack_mem=%x[val1.stack_mem], stack_size=%d[val1.stack_size], priority=%E[val7, rtx_th_priority:id]" val1="osThreadAttr_t" info="Attributes structure for thread object."/>
-    <event id="0xF200 + 0x03" level="Op"     property="ThreadCreated"               value="thread_id=%x[val1]" info="Thread object was created."/>
+    <event id="0xF200 + 0x03" level="Op"     property="ThreadCreated"      handle="create(uint32_t)[val1]"  hname="%t[val2]"     value="thread_id=%x[val1]" info="Thread object was created."/>
     <event id="0xF200 + 0x04" level="API"    property="ThreadGetName"               value="thread_id=%x[val1], name=%x[val2]" info="osThreadGetName function was called and object name was retrieved."/>
     <event id="0xF200 + 0x05" level="Detail" property="ThreadGetName"               value="name=%t[val1]" info="Thread object name as ASCII string."/>
     <event id="0xF200 + 0x06" level="API"    property="ThreadGetId"                 value="thread_id=%x[val1]" info="osThreadGetId function was called and current running thread id was retrieved."/>
@@ -1509,20 +1526,20 @@
     <event id="0xF200 + 0x0B" level="API"    property="ThreadGetPriority"           value="thread_id=%x[val1], priority=%E[val2, rtx_th_priority:id]" info="osThreadGetPriority function was called and thread priority was retrieved."/>
     <event id="0xF200 + 0x0C" level="API"    property="ThreadYield"                 value="" info="osThreadYield function was called."/>
     <event id="0xF200 + 0x0D" level="API"    property="ThreadSuspend"               value="thread_id=%x[val1]" info="osThreadSuspend function was called."/>
-    <event id="0xF200 + 0x0E" level="Op"     property="ThreadSuspended"             value="thread_id=%x[val1]" info="Thread execution was suspended."/>
+    <event id="0xF200 + 0x0E" level="Op"     property="ThreadSuspended"     handle="stalled(uint32_t)[val1]"  hname="%S[val1]"        value="thread_id=%x[val1]" info="Thread execution was suspended."/>
     <event id="0xF200 + 0x0F" level="API"    property="ThreadResume"                value="thread_id=%x[val1]" info="osThreadResume function was called."/>
-    <event id="0xF200 + 0x10" level="Op"     property="ThreadResumed"               value="thread_id=%x[val1]" info="Thread execution was resumed."/>
+    <event id="0xF200 + 0x10" level="Op"     property="ThreadResumed"       handle="idle(uint32_t)[val1]"  hname="%S[val1]"        value="thread_id=%x[val1]" info="Thread execution was resumed."/>
     <event id="0xF200 + 0x11" level="API"    property="ThreadDetach"                value="thread_id=%x[val1]" info="osThreadDetach function was called."/>
     <event id="0xF200 + 0x12" level="Op"     property="ThreadDetached"              value="thread_id=%x[val1]" info="Thread was detached."/>
     <event id="0xF200 + 0x13" level="API"    property="ThreadJoin"                  value="thread_id=%x[val1]" info="osThreadJoin function was called."/>
     <event id="0xF200 + 0x14" level="Op"     property="ThreadJoinPending"           value="thread_id=%x[val1]" info="Thread join is pending."/>
     <event id="0xF200 + 0x15" level="Op"     property="ThreadJoined"                value="thread_id=%x[val1]" info="Thread joined."/>
-    <event id="0xF200 + 0x16" level="Op"     property="ThreadBlocked"               value="thread_id=%x[val1], timeout=%d[val2]" info="Current running thread execution was blocked."/>
-    <event id="0xF200 + 0x17" level="Op"     property="ThreadUnblocked"             value="thread_id=%x[val1], ret_val=%E[val2, rtx_t:status]" info="Thread execution was unblocked."/>
-    <event id="0xF200 + 0x18" level="Op"     property="ThreadPreempted"             value="thread_id=%x[val1]" info="Current running thread execution was preempted."/>
-    <event id="0xF200 + 0x19" level="Op"     property="ThreadSwitched"              value="thread_id=%x[val1]" info="Switched execution of the current running thread."/>
+    <event id="0xF200 + 0x16" level="Op"     property="ThreadBlocked"       handle="stalled(uint32_t)[val1]" hname="%S[val1]"        value="thread_id=%x[val1], timeout=%d[val2]" info="Current running thread execution was blocked."/>
+    <event id="0xF200 + 0x17" level="Op"     property="ThreadUnblocked"     handle="idle(uint32_t)[val1]"    hname="%S[val1]"        value="thread_id=%x[val1], ret_val=%E[val2, rtx_t:status]" info="Thread execution was unblocked."/>
+    <event id="0xF200 + 0x18" level="Op"     property="ThreadPreempted"     handle="idle(uint32_t)[val1]"    hname="%S[val1]"        value="thread_id=%x[val1]" info="Current running thread execution was preempted."/>
+    <event id="0xF200 + 0x19" level="Op"     property="ThreadSwitched"      handle="active(uint32_t)[val1]"  hname="%S[val1]"        value="thread_id=%x[val1]" info="Switched execution of the current running thread."/>
     <event id="0xF200 + 0x1A" level="API"    property="ThreadExit"                  value="" info="osThreadExit function was called."/>
-    <event id="0xF200 + 0x1B" level="API"    property="ThreadTerminate"             value="thread_id=%x[val1]" info="osThreadTerminate function was called."/>
+    <event id="0xF200 + 0x1B" level="API"    property="ThreadTerminate"     handle="delete(uint32_t)[val1]"  hname="%S[val1]"        value="thread_id=%x[val1]" info="osThreadTerminate function was called."/>
     <event id="0xF200 + 0x1C" level="Op"     property="ThreadDestroyed"             value="thread_id=%x[val1]" info="Thread execution was terminated."/>
     <event id="0xF200 + 0x1D" level="API"    property="ThreadGetCount"              value="count=%d[val1]" info="osThreadGetCount function was called and number of active threads was retrieved."/>
     <event id="0xF200 + 0x1E" level="API"    property="ThreadEnumerate"             value="thread_array=%x[val1], array_items=%d[val2], count=%d[val3]" info="osThreadEnumerate function was called and active threads were enumerated."/>
@@ -1612,7 +1629,7 @@
     <event id="0xF700 + 0x01" level="API"    property="MemoryPoolNew"          value="block_count=%d[val1], block_size=%d[val2], attr=%x[val3]" info="osMemoryPoolNew function was called."/>
     <event id="0xF700 + 0x02" level="Detail" property="MemoryPoolNew"          value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size], mp_mem=%x[val1.mp_mem], mp_size=%d[val1.mp_size]" val1="osMemoryPoolAttr_t" info="Attributes structure for memory pool object."/>
     <event id="0xF700 + 0x03" level="Op"     property="MemoryPoolCreated"      value="mp_id=%x[val1]" info="Memory Pool object was created"/>
-    <event id="0xF700 + 0x04" level="API"    property="MemoryPoolGetName"      value="mp_id=%x[val1], name=%x[val2]" info="osMemoryPoolGetName function was called and object name was retrieved."/>"/>
+    <event id="0xF700 + 0x04" level="API"    property="MemoryPoolGetName"      value="mp_id=%x[val1], name=%x[val2]" info="osMemoryPoolGetName function was called and object name was retrieved."/>
     <event id="0xF700 + 0x05" level="Detail" property="MemoryPoolGetName"      value="name=%t[val1]" info="Memory pool object name as ASCII string."/>
     <event id="0xF700 + 0x06" level="API"    property="MemoryPoolAlloc"        value="mp_id=%x[val1], timeout=%d[val2]" info="osMemoryPoolAlloc function was called."/>
     <event id="0xF700 + 0x07" level="Op"     property="MemoryPoolAllocPending" value="mp_id=%x[val1], timeout=%d[val2]" info="Memory pool allocation is pending."/>

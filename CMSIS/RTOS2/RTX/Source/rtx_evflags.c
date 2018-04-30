@@ -143,11 +143,6 @@ static void osRtxEventFlagsPostProcess (os_event_flags_t *ef) {
   os_thread_t *thread_next;
   uint32_t     event_flags;
 
-  if (ef->state == osRtxObjectInactive) {
-    //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-    return;
-  }
-
   // Check if Threads are waiting for Event Flags
   thread = ef->thread_list;
   while (thread != NULL) {
@@ -445,9 +440,6 @@ static osStatus_t svcRtxEventFlagsDelete (osEventFlagsId_t ef_id) {
     return osErrorResource;
   }
 
-  // Mark object as inactive
-  ef->state = osRtxObjectInactive;
-
   // Unblock waiting threads
   if (ef->thread_list != NULL) {
     do {
@@ -456,6 +448,10 @@ static osStatus_t svcRtxEventFlagsDelete (osEventFlagsId_t ef_id) {
     } while (ef->thread_list != NULL);
     osRtxThreadDispatch(NULL);
   }
+
+  // Mark object as inactive and invalid
+  ef->state = osRtxObjectInactive;
+  ef->id    = osRtxIdInvalid;
 
   // Free object memory
   if ((ef->flags & osRtxFlagSystemObject) != 0U) {

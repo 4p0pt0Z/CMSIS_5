@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  
-  Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+  Copyright (c) 2013-2018 ARM Limited. All rights reserved.
  
   SPDX-License-Identifier: Apache-2.0
  
@@ -112,6 +112,7 @@
       <xs:enumeration value="ARM CMSIS:109"/>
       <xs:enumeration value="ArteryTek:143"/>
       <xs:enumeration value="Atmel:3"/>
+      <xs:enumeration value="Autochips:150"/>
       <xs:enumeration value="CSR:118"/>
       <xs:enumeration value="Cypress:19"/>
       <xs:enumeration value="Dialog Semiconductor:113"/>
@@ -159,6 +160,7 @@
       <xs:enumeration value="Samsung:47"/>
       <xs:enumeration value="Silergy Corp:139"/>
       <xs:enumeration value="Silicon Labs:21"/>
+      <xs:enumeration value="Sinowealth:149"/>
       <xs:enumeration value="SONiX:110"/>
       <xs:enumeration value="Spansion:100"/>
       <xs:enumeration value="STMicroelectronics:13"/>
@@ -955,11 +957,15 @@
   <!-- taxonomy description type definition -->
   <xs:complexType name="TaxonomyDescriptionType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
-        <xs:attribute name="Cclass"    type="CclassType" use="required"/> <!-- Class the description is associated with -->
-        <xs:attribute name="Cgroup"    type="CgroupType" use="optional"/> <!-- Group the description is associated with -->
-        <xs:attribute name="doc"       type="xs:string"  use="optional"/> <!-- link to documentation for the :Class:[Group] -->
-        <xs:attribute name="generator" type="xs:string"  use="optional"/> <!-- link a generator to a taxonomy -->
+      <xs:extension base="xs:string">
+        <xs:attribute name="Cclass" type="CclassType" use="required" />
+        <!-- Class the description is associated with -->
+        <xs:attribute name="Cgroup" type="CgroupType" use="optional" />
+        <!-- Group the description is associated with -->
+        <xs:attribute name="doc" type="xs:string" use="optional" />
+        <!-- link to documentation for the :Class:[Group] -->
+        <xs:attribute name="generator" type="xs:string" use="optional" />
+        <!-- link a generator to a taxonomy -->
         <!-- if true, the vendor gives permission for the doc file above being extracted from the pack and displayed on a web-page -->
         <!-- links to web pages are assumed public -->
         <xs:attribute name="public" type="xs:boolean" use="optional" default="false"/>
@@ -1500,7 +1506,7 @@
   <!-- release contains version as an attribute and notes as element text -->
   <xs:complexType name="ReleaseType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
+      <xs:extension base="xs:string">
         <xs:attribute name="version"     type="PackVersionType" use="required"/>
         <xs:attribute name="date"        type="xs:date"     use="optional"/>
         <xs:attribute name="deprecated"  type="xs:date"     use="optional"/>
@@ -1553,7 +1559,7 @@
   <!-- exe generator argument has optional host and switch attributes -->
   <xs:complexType name="ExeGeneratorArgumentType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
+      <xs:extension base="xs:string">
         <xs:attribute name="switch" type="xs:string" use="optional"/>
         <xs:attribute name="host" type="HostEnumType" use="optional" default="all"/>
       </xs:extension>
@@ -1563,7 +1569,7 @@
   <!-- web generator argument does not have host attribute -->
   <xs:complexType name="WebGeneratorArgumentType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
+      <xs:extension base="xs:string">
         <!-- web generator argument must have switch argument -->
         <xs:attribute name="switch" type="xs:string" use="required"/>
       </xs:extension>
@@ -1573,14 +1579,14 @@
   <!-- eclipse generator argument does not have host nor switch attribute -->
   <xs:complexType name="EclipseGeneratorArgumentType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
+      <xs:extension base="xs:string">
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
 
   <xs:complexType name="GeneratorCommandType">
     <xs:simpleContent>
-      <xs:extension base='xs:string'>
+      <xs:extension base="xs:string">
         <xs:attribute name="host" type="HostEnumType" use="optional" default="all"/>
       </xs:extension>
     </xs:simpleContent>
@@ -1591,7 +1597,7 @@
       <xs:element name="argument" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
-            <xs:extension base='xs:string'>
+            <xs:extension base="xs:string">
               <xs:attribute name="switch" type="xs:string" use="optional"/>
             </xs:extension>
           </xs:simpleContent>

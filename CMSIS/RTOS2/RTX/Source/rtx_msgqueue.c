@@ -168,19 +168,10 @@ static void osRtxMessageQueuePostProcess (os_message_t *msg) {
   const void         *ptr_src;
         void         *ptr_dst;
 
-  if (msg->state == osRtxObjectInactive) {
-    //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-    return;
-  }
-
   if (msg->flags != 0U) {
     // Remove Message
     //lint -e{9079} -e{9087} "cast between pointers to different object types"
     mq = *((os_message_queue_t **)(void *)&msg[1]);
-    if (mq->state == osRtxObjectInactive) {
-      //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-      return;
-    }
     MessageQueueRemove(mq, msg);
     // Free memory
     msg->state = osRtxObjectInactive;
@@ -212,10 +203,6 @@ static void osRtxMessageQueuePostProcess (os_message_t *msg) {
     // New Message
     //lint -e{9079} -e{9087} "cast between pointers to different object types"
     mq = (void *)msg->next;
-    if (mq->state == osRtxObjectInactive) {
-      //lint -e{904} "Return statement before end of function" [MISRA Note 1]
-      return;
-    }
     //lint -e{9087} "cast between pointers to different object types"
     ptr_src = (const void *)msg->prev;
     // Check if Thread is waiting to receive a Message
@@ -766,9 +753,6 @@ static osStatus_t svcRtxMessageQueueDelete (osMessageQueueId_t mq_id) {
     return osErrorResource;
   }
 
-  // Mark object as inactive
-  mq->state = osRtxObjectInactive;
-
   // Unblock waiting threads
   if (mq->thread_list != NULL) {
     do {
@@ -777,6 +761,10 @@ static osStatus_t svcRtxMessageQueueDelete (osMessageQueueId_t mq_id) {
     } while (mq->thread_list != NULL);
     osRtxThreadDispatch(NULL);
   }
+
+  // Mark object as inactive and invalid
+  mq->state = osRtxObjectInactive;
+  mq->id    = osRtxIdInvalid;
 
   // Free data memory
   if ((mq->flags & osRtxFlagSystemMemory) != 0U) {
