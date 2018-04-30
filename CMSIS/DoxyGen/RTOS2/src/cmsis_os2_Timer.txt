@@ -90,7 +90,7 @@ Returned by:
 /**
 \typedef void (*osTimerFunc_t) (void *argument)
 \details
-The timer callback function is called everytime the timer elapses.
+The timer callback function is called every time the timer elapses.
 
 The callback might be executed either in a dedicated timer thread or in interrupt context. Thus it is recommended to only
 use ISR callable functions from the timer callback.
@@ -102,11 +102,7 @@ use ISR callable functions from the timer callback.
 /**
 \struct osTimerAttr_t 
 \details
-Attributes to configure a timer.
-
-Refer to \ref CMSIS_RTOS_MemoryMgmt for details about usage of
- - osTimerAttr_t::cb_mem
- - osTimerAttr_t::cb_size
+Specifies the following attributes for the \ref osTimerNew function.
 */
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
@@ -118,6 +114,17 @@ The timer is in stopped state until it is started with \ref osTimerStart. The fu
 is started (call to \ref osKernelStart), but not before it is initialized (call to \ref osKernelInitialize).
 
 The function \b osTimerNew returns the pointer to the timer object identifier or \token{NULL} in case of an error.
+
+Possible \ref osTimerId_t return values:
+- pointer to the timer object identifier, in case of success
+- \em NULL, if the callback function \em func is \em NULL
+- \em NULL, if the control block memory (\em attr->cb_mem) is not NULL the memory is not 4 byte aligned 
+- \em NULL, if the control block memory (\em attr->cb_mem) is not NULL but the size (\em attr->cb_size) is not big enough to store a \em timer object
+- \em NULL, if the control block memory (\em attr->cb_mem) is NULL but the size (\em attr->cb_size) is not 0
+- \em NULL, if the timer type is not \em 'osTimerOnce' and the timer type is not \em 'osTimerPeriodic'
+- \em NULL, if IRQ is masked
+- \em NULL, if in IRQ mode. 
+
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -161,6 +168,19 @@ void TimerCreate_example (void)  {
 The function \b osTimerGetName returns the pointer to the name string of the timer identified by parameter \a timer_id or
 \token{NULL} in case of an error.
 
+Possible return values:
+- pointer to the name string of the timer
+- \em NULL, if a timer specified by \a timer_id does not exist
+- \em NULL, if the timer specified by \a timer_id  has not been initialized with a name
+- \em NULL, if 
+the timer with \em timer_id is \em NULL 
+
+- \em NULL, if the state of the timer is \em 'osRtxObjectInactive'
+- \em NULL, if 
+IRQ is masked
+
+- \em NULL, if in IRQ mode.
+
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
 
@@ -172,10 +192,13 @@ The function \b osTimerStart starts or restarts a timer specified by the paramet
 specifies the value of the timer in \ref CMSIS_RTOS_TimeOutValue "time ticks".
 
 Possible \ref osStatus_t return values:
- - \em osOK: the specified timer has been started or restarted.
- - \em osErrorISR: \b osTimerStart cannot be called from interrupt service routines.
- - \em osErrorParameter: parameter \a timer_id is either \token{NULL} or invalid or \a ticks is incorrect.
- - \em osErrorResource: the timer specified by parameter \a timer_id is in an invalid timer state.
+- \em 'osOK', if the tmer specified by \a timer_id  has been started or restarted
+- \em 'osErrorResource', if the timer is in state \em 'TimerInactive'
+- \em 'osErrorResource', if the timer tick function (osRtxInfo.timer.tick) is \em NULL
+- \em 'osErrorParameter', if a timer specified by \a timer_id does not exist
+- \em 'osErrorParameter', if \em ticks is equal to 0
+- \em 'osErrorISR', if IRQ is masked
+- \em 'osErrorISR', if in IRQ mode.  
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -217,10 +240,13 @@ void TimerStart_example (void)  {
 The function \b osTimerStop stops a timer specified by the parameter \a timer_id.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the specified timer has been stopped.
- - \em osErrorISR: \b osTimerStop cannot be called from interrupt service routines.
- - \em osErrorParameter: parameter \a timer_id is either \token{NULL} or invalid.
- - \em osErrorResource: the timer specified by parameter \a timer_id is not running (you can only stop a running timer).
+- \em 'osOK', if the specified timer has been stopped
+- \em 'osErrorParameter', if a timer specified by \a timer_id does not exist
+- \em 'osErrorParameter', if the timer associated with \em timer_id is \em NULL
+- \em 'osErrorResource', if the timer was not in state \em 'osRtxTimerRunning'
+- \em 'osErrorISR', if IRQ is masked
+- \em 'osErrorISR', if in IRQ mode. 
+
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -269,10 +295,12 @@ if the timer is running and \token{0} if the timer is stopped or an error occurr
 The function \b osTimerDelete deletes the timer specified by parameter \a timer_id.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the specified timer has been deleted.
- - \em osErrorISR: \b osTimerDelete cannot be called from interrupt service routines.
- - \em osErrorParameter: parameter \a timer_id is either \token{NULL} or invalid.
- - \em osErrorResource: the timer specified by parameter \a timer_id is in an invalid timer state.
+- \em 'osErrorParameter', if \em timer_id is \em NULL
+- \em 'osErrorParameter', if a timer specified by \a timer_id does not exist
+- \em 'osErrorResoure', if \em timer->state = \em 'osRtxTimerInactive'
+- \em 'osErrorISR', if IRQ is masked
+- \em 'osErrorISR', if in IRQ mode.  
+
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -307,21 +335,23 @@ void TimerDelete_example (void) {
 /**
 \var osTimerAttr_t::attr_bits
 \details
-Reserved for future use (set to '0').\n
-Default: \token{0}.
+Reserved for future use (must be set to '0' for future compatibility).
 
 \var osTimerAttr_t::cb_mem
 \details
-Pointer to a memory location for the timer control block object. This can optionally be used for custom memory management systems.\n
-Default: \token{NULL} (uses kernel memory management).
+Pointer to a memory for the timer control block object. Refer to \ref StaticObjectMemory for more information.
 
+Default: \token{NULL} to use \ref CMSIS_RTOS_MemoryMgmt_Automatic for the timer control block.
 
 \var osTimerAttr_t::cb_size
 \details
-The size of the memory block passed with \ref cb_mem. Must be the size of a timer control block object or larger.
+The size (in bytes) of memory block passed with \ref cb_mem. For RTX, the minimum value is defined with \ref osRtxTimerCbSize (higher values are permitted).
+
+Default: \token{0} as the default is no memory provided with \ref cb_mem.
 
 \var osTimerAttr_t::name
 \details
-Pointer to a string with a human readable name of the timer object.\n
-Default: \token{NULL}.
+Pointer to a constant string with a human readable name (displayed during debugging) of the timer object.
+
+Default: \token{NULL} no name specified.
 */

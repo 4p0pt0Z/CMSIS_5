@@ -2659,44 +2659,44 @@ and 8-bit Java bytecodes in Jazelle state.
 
         <!-- CPU and Compiler dependent -->
         <!-- ARMCC -->
-        <file category="library" condition="CM0_LE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM0.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM0_BE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM0_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM3_LE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM3_BE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM0_LE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM0.lib"      src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM0_BE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM0_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM3_LE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib"      src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM3_BE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
         <file category="library" condition="CM4_LE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM4_BE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM4_BE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
         <file category="library" condition="CM4_FP_LE_ARMCC" name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM4_FP_BE_ARMCC" name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM7_LE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM7_BE_ARMCC"    name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM7_FP_LE_ARMCC" name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
-        <file category="library" condition="CM7_FP_BE_ARMCC" name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4_B.lib"  src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM4_FP_BE_ARMCC"     name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM7_LE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib"      src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM7_BE_ARMCC"        name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM7_FP_LE_ARMCC"     name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4.lib"      src="CMSIS/RTOS/RTX/SRC/ARM"/>
+        <file category="library" condition="CM7_FP_BE_ARMCC"     name="CMSIS/RTOS/RTX/LIB/ARM/RTX_CM4_B.lib"    src="CMSIS/RTOS/RTX/SRC/ARM"/>
         <!-- GCC -->
-        <file category="library" condition="CM0_LE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM0.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM0_BE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM0_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM3_LE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM3_BE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM0_LE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM0.a"     src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM0_BE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM0_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM3_LE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3.a"     src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM3_BE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
         <file category="library" condition="CM4_LE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM4_BE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM4_BE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
         <file category="library" condition="CM4_FP_LE_GCC"   name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM4_FP_BE_GCC"   name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM7_LE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM7_BE_GCC"      name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM7_FP_LE_GCC"   name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
-        <file category="library" condition="CM7_FP_BE_GCC"   name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4_B.a" src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM4_FP_BE_GCC"       name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM7_LE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3.a"     src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM7_BE_GCC"          name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM3_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM7_FP_LE_GCC"       name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4.a"     src="CMSIS/RTOS/RTX/SRC/GCC"/>
+        <file category="library" condition="CM7_FP_BE_GCC"       name="CMSIS/RTOS/RTX/LIB/GCC/libRTX_CM4_B.a"   src="CMSIS/RTOS/RTX/SRC/GCC"/>
         <!-- IAR -->
-        <file category="library" condition="CM0_LE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM0.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM0_BE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM0_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM3_LE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM3_BE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM4_LE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM4_BE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM4_FP_LE_IAR"   name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM4_FP_BE_IAR"   name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM7_LE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM7_BE_IAR"      name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM7_FP_LE_IAR"   name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
-        <file category="library" condition="CM7_FP_BE_IAR"   name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4_B.a"    src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM0_LE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM0.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM0_BE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM0_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM3_LE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM3_BE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM4_LE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM4_BE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM4_FP_LE_IAR"       name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM4_FP_BE_IAR"       name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM7_LE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM7_BE_IAR"          name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM3_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM7_FP_LE_IAR"       name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4.a"        src="CMSIS/RTOS/RTX/SRC/IAR"/>
+        <file category="library" condition="CM7_FP_BE_IAR"       name="CMSIS/RTOS/RTX/LIB/IAR/RTX_CM4_B.a"      src="CMSIS/RTOS/RTX/SRC/IAR"/>
       </files>
     </component>
     <!-- CMSIS-RTOS Keil RTX component (IFX variant) -->
@@ -2853,7 +2853,7 @@ and 8-bit Java bytecodes in Jazelle state.
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Semaphore.c" version="2.0.0" select="CMSIS-RTOS2 Semaphore"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Thread.c"    version="2.0.0" select="CMSIS-RTOS2 Thread"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Timer.c"     version="2.0.1" select="CMSIS-RTOS2 Timer"/>
-        <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
+    <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
         <file category="other"  name="CMSIS/RTOS2/RTX/RTX5.scvd"/>
 
         <!-- RTX library configuration -->
@@ -2904,7 +2904,7 @@ and 8-bit Java bytecodes in Jazelle state.
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Semaphore.c" version="2.0.0" select="CMSIS-RTOS2 Semaphore"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Thread.c"    version="2.0.0" select="CMSIS-RTOS2 Thread"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Timer.c"     version="2.0.1" select="CMSIS-RTOS2 Timer"/>
-        <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
+    <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
         <file category="other"  name="CMSIS/RTOS2/RTX/RTX5.scvd"/>
 
         <!-- RTX sources (core) -->
@@ -2995,7 +2995,7 @@ and 8-bit Java bytecodes in Jazelle state.
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Semaphore.c" version="2.0.0" select="CMSIS-RTOS2 Semaphore"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Thread.c"    version="2.0.0" select="CMSIS-RTOS2 Thread"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Timer.c"     version="2.0.1" select="CMSIS-RTOS2 Timer"/>
-        <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
+    <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
         <file category="other"  name="CMSIS/RTOS2/RTX/RTX5.scvd"/>
 
         <!-- RTX sources (core) -->
@@ -3051,7 +3051,7 @@ and 8-bit Java bytecodes in Jazelle state.
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Semaphore.c" version="2.0.0" select="CMSIS-RTOS2 Semaphore"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Thread.c"    version="2.0.0" select="CMSIS-RTOS2 Thread"/>
         <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/Timer.c"     version="2.0.1" select="CMSIS-RTOS2 Timer"/>
-        <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
+    <file category="source" attr="template" name="CMSIS/RTOS2/RTX/Template/svc_user.c"  version="1.0.0" select="CMSIS-RTOS2 SVC User Table"/>
         <file category="other"  name="CMSIS/RTOS2/RTX/RTX5.scvd"/>
 
         <!-- RTX sources (core) -->
